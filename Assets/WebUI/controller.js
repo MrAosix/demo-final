@@ -20,6 +20,15 @@ let readyBtn = document.getElementById("readyBtn");
 // Buttons
 let ctrlButtons = document.querySelectorAll(".ctrl");
 
+    let lastTouch = 0;
+    document.addEventListener('touchend', function (e) {
+        const now = new Date().getTime();
+        if (now - lastTouch < 300) {
+            e.preventDefault();
+        }
+        lastTouch = now;
+    }, { passive: false });
+
 ws.onopen = () => {
     console.log("Connected to WS");
     ws.send(JSON.stringify({ action: "join" }));
@@ -128,3 +137,5 @@ function sendInput(dir) {
 ctrlButtons.forEach(btn => {
     btn.onclick = () => sendInput(btn.dataset.dir);
 });
+
+

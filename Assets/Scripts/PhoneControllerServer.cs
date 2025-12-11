@@ -34,10 +34,10 @@ public class PhoneControllerServer : MonoBehaviour
     private static HashSet<int> takenSeats = new();
 
     private static readonly string[] playerNames =
-        { "Alpha", "Bravo", "Charlie", "Delta", "Echo", "Foxtrot" };
+        { "Eminem", "Adele", "Ahmed", "Beyonce", "Frank Sinatra", "Lady Gaga" };
 
     private static readonly string[] playerColors =
-        { "#FF4B4B", "#4BFF54", "#4BC8FF", "#FFB84B", "#B84BFF", "#4BFFD8" };
+        { "#FF7D00", "#00FF00", "#FF0019", "#0022FF", "#FF00CD", "#00FFE1" };
 
     void Start()
     {

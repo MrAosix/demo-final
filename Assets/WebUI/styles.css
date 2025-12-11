@@ -1,3 +1,12 @@
+/* REMOVE MOBILE ZOOM + DOUBLE TAP ZOOM */
+html, body {
+    touch-action: manipulation;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+/* BASE */
 body {
     margin: 0;
     padding: 0;
@@ -28,65 +37,101 @@ button {
     margin-top: 10px;
 }
 
-button.ready {
-    background: #00cc44 !important;
-    border: 2px solid white;
-    transform: scale(1.08);
+    button.ready {
+        background: #00cc44 !important;
+        border: 2px solid white;
+        transform: scale(1.08);
+    }
+
+    button:active {
+        background: #1f78c2;
+    }
+
+/* CONTROLLER GRID (fixed responsiveness + centering) */
+#controllerPanel {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
 }
 
-button:active {
-    background: #1f78c2;
-}
-
-/* CONTROLLER GRID */
+/* GRID LAYOUT */
 #controllerGrid {
     display: grid;
+    /* FIX: forces true square layout on all phones */
+    grid-template-columns: repeat(3, minmax(60px, 90px));
+    grid-template-rows: repeat(3, minmax(60px, 90px));
     grid-template-areas:
         ". up ."
         "left . right"
         ". down .";
-    gap: 20px;
+    gap: 18px;
     justify-content: center;
     align-items: center;
-    margin-top: 40px;
+    margin-top: 30px;
 }
 
-.ctrl[data-dir="up"] { grid-area: up; }
-.ctrl[data-dir="down"] { grid-area: down; }
-.ctrl[data-dir="left"] { grid-area: left; }
-.ctrl[data-dir="right"] { grid-area: right; }
+/* Assign areas */
+.ctrl[data-dir="up"] {
+    grid-area: up;
+}
 
+.ctrl[data-dir="down"] {
+    grid-area: down;
+}
+
+.ctrl[data-dir="left"] {
+    grid-area: left;
+}
+
+.ctrl[data-dir="right"] {
+    grid-area: right;
+}
+
+/* BUTTON BASE */
 .ctrl {
-    width: 90px;
-    height: 90px;
-    font-size: 2.8rem;
+    width: 100%;
+    height: 100%;
+    max-width: 90px;
+    max-height: 90px;
+    min-width: 60px;
+    min-height: 60px;
+    font-size: 2.5rem;
     border-radius: 50%;
     background: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    touch-action: manipulation;
 }
 
-.ctrl:active {
-    background: #777;
-}
+    .ctrl:active {
+        background: #777;
+    }
 
-/* Mobile */
+/* MOBILE RESPONSIVE FIX */
 @media (max-width: 600px) {
     #controllerGrid {
-        gap: 14px;
-        margin-top: 25px;
+        grid-template-columns: repeat(3, 70px);
+        grid-template-rows: repeat(3, 70px);
+        gap: 12px;
+        margin-top: 20px;
     }
 
     .ctrl {
-        width: 70px;
-        height: 70px;
-        font-size: 2.2rem;
+        font-size: 2rem;
     }
 }
 
-/* Extra small phones */
+/* VERY SMALL PHONES */
 @media (max-width: 380px) {
+    #controllerGrid {
+        grid-template-columns: repeat(3, 55px);
+        grid-template-rows: repeat(3, 55px);
+        gap: 10px;
+    }
+
     .ctrl {
-        width: 60px;
-        height: 60px;
-        font-size: 1.8rem;
+        font-size: 1.7rem;
     }
 }
