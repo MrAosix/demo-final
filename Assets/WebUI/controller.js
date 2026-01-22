@@ -1,4 +1,4 @@
-let ws = new WebSocket(`ws://${location.hostname}:8081/ws`);
+let ws = new WebSocket(`ws://192.168.8.237:8750/ws`);
 
 let inGame = false;
 let isReady = false;

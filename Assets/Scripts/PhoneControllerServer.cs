@@ -89,7 +89,7 @@ public class PhoneControllerServer : MonoBehaviour
 
     private void StartWSServer()
     {
-        ws = new WebSocketServer("ws://0.0.0.0:8081");
+        ws = new WebSocketServer("ws://0.0.0.0:8750");
         ws.AddWebSocketService<PlayerConn>("/ws");
         ws.Start();
 
@@ -231,8 +231,10 @@ public class PhoneControllerServer : MonoBehaviour
             var wrapper = new PlayerWrapper { type = "state", players = list.ToArray() };
             string json = JsonUtility.ToJson(wrapper);
 
-            if (instance != null)
-                instance.Sessions.Broadcast(json);
+            // Broadcast to all sessions
+            var sessions = instance.Sessions;
+            if (sessions != null)
+                sessions.Broadcast(json);
         }
     }
 
