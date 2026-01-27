@@ -93,7 +93,7 @@ public class PhoneControllerServer : MonoBehaviour
         ws.AddWebSocketService<PlayerConn>("/ws");
         ws.Start();
 
-        Debug.Log("WebSocket server running at ws://<yourip>:8081/ws");
+ 
     }
 
     public class PlayerConn : WebSocketBehavior

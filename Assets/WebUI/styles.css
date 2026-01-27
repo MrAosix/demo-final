@@ -4,6 +4,7 @@ html, body {
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     user-select: none;
+    overflow: hidden;
 }
 
 /* BASE */
@@ -37,101 +38,116 @@ button {
     margin-top: 10px;
 }
 
-    button.ready {
+button.ready {
         background: #00cc44 !important;
         border: 2px solid white;
         transform: scale(1.08);
-    }
+}
 
-    button:active {
+button:active {
         background: #1f78c2;
-    }
+}
 
-/* CONTROLLER GRID (fixed responsiveness + centering) */
+/* CONTROLLER PANEL (full screen) */
 #controllerPanel {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 100%;
+    width: 100vw;
+    height: 100vh;
 }
 
-/* GRID LAYOUT */
+/* TWO-BUTTON LAYOUT (LEFT + RIGHT stretched) */
 #controllerGrid {
     display: grid;
-    /* FIX: forces true square layout on all phones */
-    grid-template-columns: repeat(3, minmax(60px, 90px));
-    grid-template-rows: repeat(3, minmax(60px, 90px));
-    grid-template-areas:
-        ". up ."
-        "left . right"
-        ". down .";
-    gap: 18px;
-    justify-content: center;
-    align-items: center;
-    margin-top: 30px;
-}
-
-/* Assign areas */
-.ctrl[data-dir="up"] {
-    grid-area: up;
-}
-
-.ctrl[data-dir="down"] {
-    grid-area: down;
-}
-
-.ctrl[data-dir="left"] {
-    grid-area: left;
-}
-
-.ctrl[data-dir="right"] {
-    grid-area: right;
+    grid-template-columns: 1fr 1fr; 
+    width: 100vw;
+    height: 100vh;
+    padding: 0;
+    margin: 0;
+    gap: 30px;
 }
 
 /* BUTTON BASE */
 .ctrl {
     width: 100%;
     height: 100%;
-    max-width: 90px;
-    max-height: 90px;
-    min-width: 60px;
-    min-height: 60px;
-    font-size: 2.5rem;
-    border-radius: 50%;
-    background: #333;
+    max-width: none;
+    max-height: none;
     display: flex;
     justify-content: center;
     align-items: center;
+    border-radius: 0; /* full-rectangle edge button */
+    font-size: 2rem;
+    background: #222;
+    color: white;
     touch-action: manipulation;
+    border: solid 1px #444;
+    user-select: none;
+    -webkit-user-select: none;
 }
 
-    .ctrl:active {
-        background: #777;
-    }
+.ctrl:active {
+        background: #555;
+}
 
-/* MOBILE RESPONSIVE FIX */
+/* MOBILE */
 @media (max-width: 600px) {
-    #controllerGrid {
-        grid-template-columns: repeat(3, 70px);
-        grid-template-rows: repeat(3, 70px);
-        gap: 12px;
-        margin-top: 20px;
-    }
-
     .ctrl {
-        font-size: 2rem;
+        font-size: 2.6rem;
     }
 }
 
-/* VERY SMALL PHONES */
+/* EXTRA SMALL PHONES */
 @media (max-width: 380px) {
-    #controllerGrid {
-        grid-template-columns: repeat(3, 55px);
-        grid-template-rows: repeat(3, 55px);
-        gap: 10px;
+    .ctrl {
+        font-size: 2.2rem;
+    }
+}
+
+/* ORIENTATION OVERLAY */
+#rotateOverlay {
+    position: fixed;
+    inset: 0;
+    background: #000;
+    color: white;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+    z-index: 9999;
+    font-family: Arial;
+}
+
+#rotateOverlay h1 {
+        font-size: 2rem;
+        margin-bottom: 20px;
+}
+
+.rotate-icon {
+    width: 120px;
+    height: 120px;
+    border: 4px solid white;
+    border-radius: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 3rem;
+    animation: rotatePhone 1.4s infinite ease-in-out;
+}
+
+@keyframes rotatePhone {
+    0% {
+        transform: rotate(0deg);
     }
 
-    .ctrl {
-        font-size: 1.7rem;
+    50% {
+        transform: rotate(90deg);
+    }
+
+    100% {
+        transform: rotate(0deg);
     }
 }

@@ -1,4 +1,32 @@
 let ws = new WebSocket(`ws://192.168.8.237:8750/ws`);
+let ws = new WebSocket("ws://192.168.8.172:8750/ws");
+
+/* ============================================================
+   ORIENTATION LOCK (SHOW OVERLAY IF PORTRAIT)
+============================================================ */
+const rotateOverlay = document.getElementById("rotateOverlay");
+
+function checkOrientation() {
+    const portrait = window.innerHeight > window.innerWidth;
+
+    if (portrait) {
+        rotateOverlay.style.display = "flex";
+        document.body.style.overflow = "hidden"; // block interaction
+    } else {
+        rotateOverlay.style.display = "none";
+        document.body.style.overflow = "auto";
+    }
+}
+
+window.addEventListener("resize", checkOrientation);
+window.addEventListener("orientationchange", checkOrientation);
+
+checkOrientation(); // run immediately
+
+/* ============================================================
+   WEBSOCKET SETUP
+============================================================ */
+
 
 let inGame = false;
 let isReady = false;
@@ -20,15 +48,10 @@ let readyBtn = document.getElementById("readyBtn");
 // Buttons
 let ctrlButtons = document.querySelectorAll(".ctrl");
 
-    let lastTouch = 0;
-    document.addEventListener('touchend', function (e) {
-        const now = new Date().getTime();
-        if (now - lastTouch < 300) {
-            e.preventDefault();
-        }
-        lastTouch = now;
-    }, { passive: false });
 
+/* ============================================================
+   WEBSOCKET EVENTS
+============================================================ */
 ws.onopen = () => {
     console.log("Connected to WS");
     ws.send(JSON.stringify({ action: "join" }));
@@ -69,6 +92,10 @@ ws.onmessage = (event) => {
     }
 };
 
+
+/* ============================================================
+   UI UPDATE
+============================================================ */
 function updateUI(players) {
     if (inGame) return;
     if (!myId) return;
@@ -96,14 +123,22 @@ function updateUI(players) {
     }
 }
 
-readyBtn.onclick = () => {
+
+/* ============================================================
+   READY BUTTON
+============================================================ */
+readyBtn.addEventListener("click", () => {
     readyBtn.classList.add("ready");
     readyBtn.textContent = "READY ✔";
     readyBtn.disabled = true;
 
     ws.send(JSON.stringify({ action: "ready" }));
-};
+});
 
+
+/* ============================================================
+   COUNTDOWN
+============================================================ */
 function startCountdown() {
     if (inGame) return;
 
@@ -127,6 +162,10 @@ function startCountdown() {
     }, 1000);
 }
 
+
+/* ============================================================
+   ARROW INPUT (NO FEEDBACK)
+============================================================ */
 function sendInput(dir) {
     ws.send(JSON.stringify({
         action: "input",
@@ -135,7 +174,11 @@ function sendInput(dir) {
 }
 
 ctrlButtons.forEach(btn => {
-    btn.onclick = () => sendInput(btn.dataset.dir);
+    btn.addEventListener("touchstart", () => {
+        sendInput(btn.dataset.dir);
+    }, { passive: true });
+
+    btn.addEventListener("click", () => {
+        sendInput(btn.dataset.dir);
+    });
 });
-
-
