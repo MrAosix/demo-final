@@ -81,7 +81,7 @@ ws.onmessage = (event) => {
         countdownPanel.style.display = "none";
         controllerPanel.style.display = "none";
 
-        joinPanel.innerHTML = "<h2>Connecting...</h2>";
+        joinPanel.innerHTML = "<h2>Connection...</h2>";
         ws.send(JSON.stringify({ action: "join" }));
         return;
     }
@@ -113,7 +113,7 @@ function updateUI(players) {
     if (me.ready && !isReady) {
         isReady = true;
         readyBtn.classList.add("ready");
-        readyBtn.textContent = "READY ✔";
+        readyBtn.textContent = "PRÊT ✔";
         readyBtn.disabled = true;
     }
 
@@ -128,7 +128,7 @@ function updateUI(players) {
 ============================================================ */
 readyBtn.addEventListener("click", () => {
     readyBtn.classList.add("ready");
-    readyBtn.textContent = "READY ✔";
+    readyBtn.textContent = "PRÊT ✔";
     readyBtn.disabled = true;
 
     ws.send(JSON.stringify({ action: "ready" }));
