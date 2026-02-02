@@ -2,51 +2,51 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TERMINAL CONTROLLEUR</title>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>TERMINAL CONTROLLER</title>
     <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
+    <!-- ROTATE OVERLAY -->
     <div id="rotateOverlay">
         <h1>Veuillez tourner votre téléphone</h1>
         <div class="rotate-icon">📱</div>
     </div>
 
-
-    <!-- JOIN PANEL -->
-    <div id="joinPanel" class="panel">
-        <h2>Connection...</h2>
-    </div>
-
-    <!-- READY PANEL -->
-    <div id="readyPanel" class="panel" style="display:none;">
-
-        <h2>Vous êtes <span id="nameDisplay"></span></h2>
-
-        <p>Joueur: <span id="seatDisplay"></span></p>
-
-        <div id="colorDisplay"
-             style="width:50px;height:50px;border-radius:50%;margin:15px auto;">
+    <!-- JOIN -->
+    <div id="joinPanel" class="ui">
+        <div class="ui-center">
+            <h2>Connection...</h2>
         </div>
-
-        <button id="readyBtn">Prêt</button>
     </div>
 
-    <!-- COUNTDOWN PANEL -->
-    <div id="countdownPanel" class="panel" style="display:none;">
-        <h2 id="countdownText"></h2>
+    <!-- READY -->
+    <div id="readyPanel" class="ui" style="display:none;">
+        <div class="ui-center">
+            <h2>Vous êtes <span id="nameDisplay"></span></h2>
+            <p>Joueur: <span id="seatDisplay"></span></p>
+            <div id="colorDisplay"></div>
+            <button id="readyBtn">Prêt</button>
+        </div>
     </div>
 
-    <!-- CONTROLLER PANEL -->
-    <div id="controllerPanel" class="panel" style="display:none;">
+    <!-- COUNTDOWN -->
+    <div id="countdownPanel" class="ui" style="display:none;">
+        <div class="countdown">
+            <span id="countdownText"></span>
+        </div>
+    </div>
+
+    <!-- CONTROLLER -->
+    <div id="controllerPanel" style="display:none;">
         <div id="controllerGrid">
-            <button class="ctrl" data-dir="left">◀</button>
-            <button class="ctrl" data-dir="right">▶</button>
+            <button class="ctrl left" data-dir="left">◀</button>
+            <button class="ctrl right" data-dir="right">▶</button>
         </div>
     </div>
 
     <script src="controller.js"></script>
 </body>
 </html>
-
