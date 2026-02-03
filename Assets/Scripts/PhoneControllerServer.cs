@@ -98,8 +98,6 @@ public class PhoneControllerServer : MonoBehaviour
         ws.AllowForwardedRequest = true; // REQUIRED behind Caddy
         ws.AddWebSocketService<PlayerConn>("/ws");
         ws.Start();
-
-      
     }
 
     public class PlayerConn : WebSocketBehavior
@@ -263,10 +261,4 @@ public class PhoneControllerServer : MonoBehaviour
         public string type;
         public PlayerData[] players;
     }
-
-
-   
-
-
 }
-
