@@ -5,6 +5,7 @@ using System.Net;
 using System.IO;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 
 public class PhoneControllerServer : MonoBehaviour
 {
@@ -59,7 +60,11 @@ public class PhoneControllerServer : MonoBehaviour
         http.Prefixes.Add("http://*:8080/");
         http.Start();
         http.BeginGetContext(OnHttpRequest, null);
-        Debug.Log("HTTP server running at http://<yourip>:8080");
+        string localIP = Dns.GetHostEntry(Dns.GetHostName()).AddressList.First(ip => ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork).ToString();
+
+        Debug.Log($"HTTP server running at http://{localIP}:8080");
+        Debug.Log($"WS server running at ws://{localIP}:8750/ws");
+
     }
 
     private void OnHttpRequest(IAsyncResult result)
@@ -89,11 +94,12 @@ public class PhoneControllerServer : MonoBehaviour
 
     private void StartWSServer()
     {
-        ws = new WebSocketServer("ws://0.0.0.0:8750");
+        ws = new WebSocketServer(System.Net.IPAddress.Any, 8750);
+        ws.AllowForwardedRequest = true; // REQUIRED behind Caddy
         ws.AddWebSocketService<PlayerConn>("/ws");
         ws.Start();
 
- 
+      
     }
 
     public class PlayerConn : WebSocketBehavior
@@ -207,7 +213,7 @@ public class PhoneControllerServer : MonoBehaviour
                 if (instance != null)
                     instance.Sessions.Broadcast("{\"type\":\"reset\"}");
 
-                Debug.Log("All players left — game reset.");
+                Debug.Log("All players left â€” game reset.");
             }
         }
 
@@ -257,4 +263,10 @@ public class PhoneControllerServer : MonoBehaviour
         public string type;
         public PlayerData[] players;
     }
+
+
+   
+
+
 }
+

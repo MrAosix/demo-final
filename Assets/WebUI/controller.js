@@ -1,4 +1,17 @@
+/* OPEN TERMINAL AND TYPE "ipconfig" THEN PUT THE IPV4 ADRESS OF THE ETHERNET OF THE MINI-ROUTER TO REPLACE THE IP, KEEP THE SAME PORT 8750
+
+AT SCHOOL IT SHOULD BE: 192.168.8.172 
+
+SO FOR EXAMPLE: 
+
 let ws = new WebSocket("ws://192.168.8.172:8750/ws");
+
+
+let ws = new WebSocket("ws://192.168.8.161:8750/ws");
+*/
+
+const wsProto = location.protocol === "https:" ? "wss" : "ws";
+const ws = new WebSocket(`${wsProto}://${location.host}/ws`);
 
 /* ============================================================
    ORIENTATION LOCK (SHOW OVERLAY IF PORTRAIT)
@@ -6,15 +19,15 @@ let ws = new WebSocket("ws://192.168.8.172:8750/ws");
 const rotateOverlay = document.getElementById("rotateOverlay");
 
 function checkOrientation() {
-    const portrait = window.innerHeight > window.innerWidth;
+  const portrait = window.innerHeight > window.innerWidth;
 
-    if (portrait) {
-        rotateOverlay.style.display = "flex";
-        document.body.style.overflow = "hidden"; // block interaction
-    } else {
-        rotateOverlay.style.display = "none";
-        document.body.style.overflow = "auto";
-    }
+  if (portrait) {
+    rotateOverlay.style.display = "flex";
+    document.body.style.overflow = "hidden"; // block interaction
+  } else {
+    rotateOverlay.style.display = "none";
+    document.body.style.overflow = "auto";
+  }
 }
 
 window.addEventListener("resize", checkOrientation);
@@ -25,7 +38,6 @@ checkOrientation(); // run immediately
 /* ============================================================
    WEBSOCKET SETUP
 ============================================================ */
-
 
 let inGame = false;
 let isReady = false;
@@ -47,137 +59,138 @@ let readyBtn = document.getElementById("readyBtn");
 // Buttons
 let ctrlButtons = document.querySelectorAll(".ctrl");
 
-
 /* ============================================================
    WEBSOCKET EVENTS
 ============================================================ */
 ws.onopen = () => {
-    console.log("Connected to WS");
-    ws.send(JSON.stringify({ action: "join" }));
+  console.log("Connected to WS");
+  ws.send(JSON.stringify({ action: "join" }));
 };
 
 ws.onmessage = (event) => {
-    let data = JSON.parse(event.data);
+  let data = JSON.parse(event.data);
 
-    if (data.type === "id") {
-        myId = data.id;
-        return;
-    }
+  if (data.type === "id") {
+    myId = data.id;
+    return;
+  }
 
-    if (data.type === "waiting") {
-        joinPanel.innerHTML = "<h2>Waiting for game to finish…</h2>";
-        return;
-    }
+  if (data.type === "waiting") {
+    joinPanel.innerHTML = "<h2>En attente de la fin de la partie…</h2>";
+    return;
+  }
 
-    if (data.type === "reset") {
-        console.log("RESET RECEIVED");
+  if (data.type === "reset") {
+    console.log("RESET RECEIVED");
 
-        inGame = false;
-        isReady = false;
-        myPlayer = null;
+    inGame = false;
+    isReady = false;
+    myPlayer = null;
 
-        joinPanel.style.display = "block";
-        readyPanel.style.display = "none";
-        countdownPanel.style.display = "none";
-        controllerPanel.style.display = "none";
+    joinPanel.style.display = "block";
+    readyPanel.style.display = "none";
+    countdownPanel.style.display = "none";
+    controllerPanel.style.display = "none";
 
-        joinPanel.innerHTML = "<h2>Connection...</h2>";
-        ws.send(JSON.stringify({ action: "join" }));
-        return;
-    }
+    joinPanel.innerHTML = "<h2>Connection...</h2>";
+    ws.send(JSON.stringify({ action: "join" }));
+    return;
+  }
 
-    if (data.type === "state") {
-        updateUI(data.players);
-    }
+  if (data.type === "state") {
+    updateUI(data.players);
+  }
 };
-
 
 /* ============================================================
    UI UPDATE
 ============================================================ */
 function updateUI(players) {
-    if (inGame) return;
-    if (!myId) return;
+  if (inGame) return;
+  if (!myId) return;
 
-    let me = players.find(p => p.id === myId);
-    if (!me) return;
+  let me = players.find((p) => p.id === myId);
+  if (!me) return;
 
-    myPlayer = me;
+  myPlayer = me;
 
-    joinPanel.style.display = "none";
-    readyPanel.style.display = "block";
-    nameDisplay.textContent = me.name;
-    seatDisplay.textContent = me.seat;
-    colorDisplay.style.background = me.color;
+  joinPanel.style.display = "none";
+  readyPanel.style.display = "block";
+  nameDisplay.textContent = me.name;
+  seatDisplay.textContent = me.seat;
+  colorDisplay.style.background = me.color;
 
-    if (me.ready && !isReady) {
-        isReady = true;
-        readyBtn.classList.add("ready");
-        readyBtn.textContent = "PRÊT ✔";
-        readyBtn.disabled = true;
-    }
+  if (me.ready && !isReady) {
+    isReady = true;
+    readyBtn.classList.add("ready");
+    readyBtn.textContent = "PRÊT ✔";
+    readyBtn.disabled = true;
+  }
 
-    if (players.length > 0 && players.every(p => p.ready)) {
-        startCountdown();
-    }
+  if (players.length > 0 && players.every((p) => p.ready)) {
+    startCountdown();
+  }
 }
-
 
 /* ============================================================
    READY BUTTON
 ============================================================ */
 readyBtn.addEventListener("click", () => {
-    readyBtn.classList.add("ready");
-    readyBtn.textContent = "PRÊT ✔";
-    readyBtn.disabled = true;
+  readyBtn.classList.add("ready");
+  readyBtn.textContent = "PRÊT ✔";
+  readyBtn.disabled = true;
 
-    ws.send(JSON.stringify({ action: "ready" }));
+  ws.send(JSON.stringify({ action: "ready" }));
 });
-
 
 /* ============================================================
    COUNTDOWN
 ============================================================ */
 function startCountdown() {
-    if (inGame) return;
+  if (inGame) return;
 
-    inGame = true;
+  inGame = true;
 
-    readyPanel.style.display = "none";
-    countdownPanel.style.display = "block";
+  readyPanel.style.display = "none";
+  countdownPanel.style.display = "block";
 
-    let cd = 3;
-    countdownPanel.innerHTML = `<h2>${cd}</h2>`;
+  let cd = 3;
+  countdownPanel.innerHTML = `<h2>${cd}</h2>`;
 
-    let interval = setInterval(() => {
-        cd--;
-        if (cd > 0) {
-            countdownPanel.innerHTML = `<h2>${cd}</h2>`;
-        } else {
-            clearInterval(interval);
-            countdownPanel.style.display = "none";
-            controllerPanel.style.display = "flex";
-        }
-    }, 1000);
+  let interval = setInterval(() => {
+    cd--;
+    if (cd > 0) {
+      countdownPanel.innerHTML = `<h2>${cd}</h2>`;
+    } else {
+      clearInterval(interval);
+      countdownPanel.style.display = "none";
+      controllerPanel.style.display = "flex";
+    }
+  }, 1000);
 }
-
 
 /* ============================================================
-   ARROW INPUT (NO FEEDBACK)
+   ARROW INPUT 
 ============================================================ */
 function sendInput(dir) {
-    ws.send(JSON.stringify({
-        action: "input",
-        value: dir
-    }));
+  ws.send(
+    JSON.stringify({
+      action: "input",
+      value: dir,
+    }),
+  );
 }
 
-ctrlButtons.forEach(btn => {
-    btn.addEventListener("touchstart", () => {
-        sendInput(btn.dataset.dir);
-    }, { passive: true });
+ctrlButtons.forEach((btn) => {
+  btn.addEventListener(
+    "touchstart",
+    () => {
+      sendInput(btn.dataset.dir);
+    },
+    { passive: true },
+  );
 
-    btn.addEventListener("click", () => {
-        sendInput(btn.dataset.dir);
-    });
+  btn.addEventListener("click", () => {
+    sendInput(btn.dataset.dir);
+  });
 });
